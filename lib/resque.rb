@@ -23,12 +23,12 @@ module Resque
   include Helpers
   extend self
 
-  # Accepts a 'hostname:port' string or a Redis server.
+  # Accepts a 'hostname:port:database' string or a Redis server.
   def mongo=(server)
     case server
     when String
-      host, port = server.split(':')
-      @con = Mongo::Connection.new(host, port)
+      host, port, database = server.split(':')
+      @con = Mongo::Client.new([ "#{uri}" ], :database => "#{database}")
       @db = @con.db('monque')
       @mongo = @db.collection('monque')
       @workers = @db.collection('workers')
